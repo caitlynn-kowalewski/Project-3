@@ -1,12 +1,19 @@
-var activities = document.querySelector(".activities"); //assigning the class from "fieldset" html element to a variable
-var totalAmount = 0; //will need this variable to calculate the running total of activities
+const activities = document.querySelector(".activities"); //assigning the class from "fieldset" html element to a variable
+let totalAmount = 0; //will need this variable to calculate the running total of activities
+const colorMenu = document.getElementById('colors-js-puns');//need for tshirt function
+const colorChoices = document.getElementById('color');//need for tshirt function
+const designChoice = document.getElementById('design');//need for tshirt function
 
 
 $(document).ready(function() {
     $('form:first *:input[type!=hidden]:first').focus(); //first input element in form not hidden is in focus
 }); //jquery function that makes it so the first text field is in focus.
 
+
+
 $(document).ready(function() {
+    title.options[1].selected = 'selected';
+    $('#other-title').hide();
     $('#title').change(function() { //use the id of the "select" html element and use change event listener
         $(this).val() == "other" ? $('#other-title').show() : $('#other-title').hide();
     });
@@ -15,12 +22,30 @@ $(document).ready(function() {
 is inserted into the html that creates the text box..when not selected the function runs the code on the
 other side of the colon and hides the text box when other options are selected.*/
 
-$(document).ready(function() {
-    $('#design').change(function() { //"change" event listener for tshirt design
-        $("#color").val($("#color option:first").val()); //always show first value in the color dropdown
-        $("#color").children().hide(); //hide the children elements of the color selection element
-        $(this).val() == "js puns" ? $('.jspuns1').show() : $('.heartjs1').show();
-    }) //if the selected tshirt design is "jspuns",show the colors assigned the class of .jspuns1. If other, show the colors assigned .heartjs1 class
+
+$(function() {//function that hides colors until design is selected. Displays colors per design chosen.
+  $(colorMenu).hide();
+  $(colorChoices).html('');
+});
+
+$(designChoice).change(function() {
+  if ($(this).val() === "js puns") {
+  $(colorMenu).show();
+  $(colorChoices).html(
+    '<option value="cornflowerblue">Cornflower Blue</option>' +
+    '<option value="darkslategrey">Dark Slate Grey</option>' +
+    '<option value="gold">Gold</option>'
+  );
+} else if ($(this).val() === "heart js") {
+  $(colorMenu).show();
+  $(colorChoices).html(
+    '<option value="tomato">Tomato</option>' +
+    '<option value="steelblue">Steel Blue</option>' +
+    '<option value="dimgrey">Dim Grey</option>'
+  );
+} else {
+  $(colorMenu).hide();
+}
 });
 
 /*add an event listener to the activities with fieldset of classname "".activities. Assign the IDs of the activities to variables.
@@ -141,6 +166,7 @@ $('#payment').change(function() { //a "change" event listener for the payment op
     }
 });
 
+
 //Validates the form and checks to make sure string length is appropriate for credit card, zip, and cvv
 
 document.getElementById("registration_form").onsubmit = function() {
@@ -150,6 +176,8 @@ document.getElementById("registration_form").onsubmit = function() {
     var ccinput = document.forms["registration_form"]["cc-num"].value;
     var zipinput=document.forms["registration_form"]["zip"].value;
     var cvvinput=document.forms["registration_form"]["cvv"].value;
+    var checked = $("input[type=checkbox]:checked").length;
+
     var submit = true;
 
     if (nameinput == null || nameinput == "") {
@@ -180,6 +208,11 @@ document.getElementById("registration_form").onsubmit = function() {
         submit = false;
     }
 
+    if(!checked) {
+      checkboxError="Please select at least one activity";
+      document.getElementById("checkbox_err").innerHTML = checkboxError;
+      submit=false;
+    }
     return submit;
 }
 
@@ -189,22 +222,6 @@ function removeWarning() {
 
 document.getElementById("name").onkeyup = removeWarning;
 document.getElementById("mail").onkeyup = removeWarning;
-
-//below function makes it so you must click at least one checkbox to register
-
-$(document).ready(function () {
-    $('#checkBtn').click(function() {
-      checked = $("input[type=checkbox]:checked").length;
-
-      if(!checked) {
-        alert("You must check at least one activity.");
-        checkboxError="Please select at least one activity";
-        document.getElementById("checkbox_err").innerHTML = checkboxError;
-        return false;
-      }
-
-    });
-});
 
 //below makes it so only numbers can be entered into the credit card,zip code,and cvv fields.
 
